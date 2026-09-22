@@ -5,7 +5,7 @@ from app.api.deps import get_current_actor, get_db
 from app.core.errors import DomainError
 from app.db.models.flow import Flow
 from app.schemas.flow import FlowCreate, FlowRead
-from app.schemas.plan import PlanEditRequest, PlanGenerateRequest, PlanVersionRead
+from app.schemas.plan import PlanEditRequest, PlanGenerateRequest, PlanRestoreRequest, PlanVersionRead
 from app.schemas.run import ApprovePreviewRequest, RunRead
 from app.schemas.schedule import ScheduleCreateRequest, ScheduleRead, ScheduleUpdateRequest
 from app.services import flow_service, plan_service, run_service, schedule_service
@@ -83,7 +83,45 @@ def edit_plan(
 ):
     flow = _get_flow_or_404(db, flow_id)
     try:
-        version = plan_service.edit_plan(db, flow, payload.plan, actor)
+        version = plan_service.edit_plan(
+            db,
+            flow,
+            payload.plan,
+            actor,
+            change_summary=payload.change_summary,
+            base_version_id=payload.base_version_id,
+        )
+        db.commit()
+        db.refresh(version)
+        return plan_service.to_plan_version_read(version)
+    except DomainError as exc:
+        db.rollback()
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.get("/{flow_id}/versions", response_model=list[PlanVersionRead])
+def list_flow_versions(flow_id: str, db: Session = Depends(get_db)):
+    flow = _get_flow_or_404(db, flow_id)
+    from app.db.models.plan_version import PlanVersion
+    versions = (
+        db.query(PlanVersion)
+        .filter_by(flow_id=flow.id)
+        .order_by(PlanVersion.version_number.desc())
+        .all()
+    )
+    return [plan_service.to_plan_version_read(v) for v in versions]
+
+
+@router.post("/{flow_id}/restore-version", response_model=PlanVersionRead)
+def restore_plan_version(
+    flow_id: str,
+    payload: PlanRestoreRequest,
+    db: Session = Depends(get_db),
+    actor: str = Depends(get_current_actor),
+):
+    flow = _get_flow_or_404(db, flow_id)
+    try:
+        version = plan_service.restore_version(db, flow, payload.version_id, actor)
         db.commit()
         db.refresh(version)
         return plan_service.to_plan_version_read(version)
@@ -95,12 +133,13 @@ def edit_plan(
 @router.post("/{flow_id}/approve-plan", response_model=PlanVersionRead)
 def approve_plan(
     flow_id: str,
+    version_id: str | None = None,
     db: Session = Depends(get_db),
     actor: str = Depends(get_current_actor),
 ):
     flow = _get_flow_or_404(db, flow_id)
     try:
-        version = plan_service.approve_plan(db, flow, actor)
+        version = plan_service.approve_plan(db, flow, actor, version_id=version_id)
         db.commit()
         db.refresh(version)
         return plan_service.to_plan_version_read(version)

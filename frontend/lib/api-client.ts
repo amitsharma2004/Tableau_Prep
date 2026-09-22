@@ -68,6 +68,27 @@ export const api = {
     if (schema) params.set("schema", schema);
     return request<{ rows: Record<string, unknown>[] }>(`/connections/${connectionId}/sample?${params.toString()}`, actorEmail);
   },
+  uploadFile: async (actorEmail: string, file: File, name?: string) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    if (name) formData.append("name", name);
+    const res = await fetch(`${API_BASE_URL}/connections/upload`, {
+      method: "POST",
+      headers: {
+        "X-Actor-Email": actorEmail,
+      },
+      body: formData,
+    });
+    if (!res.ok) {
+      let detail = res.statusText;
+      try {
+        const data = await res.json();
+        detail = data.detail ?? detail;
+      } catch {}
+      throw new ApiError(res.status, detail);
+    }
+    return res.json() as Promise<Connection>;
+  },
 
   // Flows
   listFlows: (actorEmail: string) => request<Flow[]>("/flows", actorEmail),
@@ -81,10 +102,28 @@ export const api = {
     }),
   getActivePlan: (actorEmail: string, flowId: string) =>
     request<PlanVersion>(`/flows/${flowId}/plan`, actorEmail),
-  editPlan: (actorEmail: string, flowId: string, plan: PlanDraft) =>
-    request<PlanVersion>(`/flows/${flowId}/plan`, actorEmail, { method: "PATCH", body: { plan } }),
-  approvePlan: (actorEmail: string, flowId: string) =>
-    request<PlanVersion>(`/flows/${flowId}/approve-plan`, actorEmail, { method: "POST" }),
+  editPlan: (
+    actorEmail: string,
+    flowId: string,
+    plan: PlanDraft,
+    changeSummary?: string,
+    baseVersionId?: string,
+  ) =>
+    request<PlanVersion>(`/flows/${flowId}/plan`, actorEmail, {
+      method: "PATCH",
+      body: { plan, change_summary: changeSummary, base_version_id: baseVersionId },
+    }),
+  listVersions: (actorEmail: string, flowId: string) =>
+    request<PlanVersion[]>(`/flows/${flowId}/versions`, actorEmail),
+  restoreVersion: (actorEmail: string, flowId: string, versionId: string) =>
+    request<PlanVersion>(`/flows/${flowId}/restore-version`, actorEmail, {
+      method: "POST",
+      body: { version_id: versionId },
+    }),
+  approvePlan: (actorEmail: string, flowId: string, versionId?: string) => {
+    const query = versionId ? `?version_id=${encodeURIComponent(versionId)}` : "";
+    return request<PlanVersion>(`/flows/${flowId}/approve-plan${query}`, actorEmail, { method: "POST" });
+  },
   runPreview: (actorEmail: string, flowId: string) =>
     request<Run>(`/flows/${flowId}/preview`, actorEmail, { method: "POST" }),
   approvePreview: (actorEmail: string, flowId: string, acknowledgeAnomaly = false) =>

@@ -209,6 +209,71 @@ export function TableauStepChanges({ node }: TableauStepChangesProps) {
         </div>
       )}
 
+      {/* 7b. Cast Step Changes */}
+      {stepType === "cast" && Boolean(details.mapping) && (
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-medium text-slate-600 block">
+            Changed Data Types:
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            {Object.entries((details.mapping as Record<string, string>) || {}).map(([col, typ], i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between bg-white border border-violet-200 rounded-md px-2.5 py-1 text-xs shadow-2xs"
+              >
+                <span className="font-mono font-medium text-slate-700">{col}</span>
+                <span className="px-1.5 py-0.5 bg-violet-100 text-violet-800 text-[10px] font-bold rounded uppercase">
+                  {typ}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 7c. Text Clean Step Changes */}
+      {stepType === "text_clean" && Boolean(details.operations) && (
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-medium text-slate-600 block">
+            Text Cleanups Applied:
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            {Object.entries((details.operations as Record<string, string>) || {}).map(([col, op], i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between bg-white border border-sky-200 rounded-md px-2.5 py-1 text-xs shadow-2xs"
+              >
+                <span className="font-mono font-medium text-slate-700">{col}</span>
+                <span className="px-1.5 py-0.5 bg-sky-100 text-sky-800 text-[10px] font-bold rounded uppercase">
+                  {op}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 7b. Union Step Changes */}
+      {stepType === "union" && (
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-medium text-slate-600 block">
+            Union / Stack Datasets (
+            <strong>{details.distinct ? "UNION (Deduplicated)" : "UNION ALL (All Rows)"}</strong>):
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {((details.inputs as string[]) || []).map((inp, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-1.5 bg-white border border-fuchsia-200 rounded-md px-2.5 py-1 text-xs shadow-2xs"
+              >
+                <span className="w-2 h-2 rounded-full bg-fuchsia-500" />
+                <span className="font-mono font-medium text-slate-700">{inp}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 8. Source Node */}
       {stepType === "source" && (
         <div className="flex items-center gap-2 text-xs text-blue-900 bg-white border border-blue-200 px-3 py-1.5 rounded-md shadow-2xs">

@@ -222,7 +222,15 @@ def execute_flow(
     if not flow.tableau_connection_id:
         raise DomainError("Flow has no Tableau connection configured - cannot publish the result")
 
-    plan_version = db.get(PlanVersion, flow.active_plan_version_id)
+    # Critical rule: Execute strictly uses approved_version_id so draft edits never bleed into production
+    target_version_id = flow.approved_version_id or flow.active_plan_version_id
+    if not target_version_id:
+        raise DomainError("Flow has no approved plan version to execute")
+
+    plan_version = db.get(PlanVersion, target_version_id)
+    if plan_version is None:
+        raise DomainError(f"Approved plan version {target_version_id!r} not found")
+
     plan = PlanDraft.model_validate_json(plan_version.plan_json)
     connector = _connector_for_flow(db, flow)
 

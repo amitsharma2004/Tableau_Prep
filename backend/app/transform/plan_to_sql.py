@@ -18,6 +18,7 @@ from app.connectors.base import quote_identifier
 from app.core.errors import SQLValidationError
 from app.llm.plan_schema import (
     AggregateStep,
+    CastStep,
     DedupeStep,
     DropNullsStep,
     FilterStep,
@@ -26,6 +27,8 @@ from app.llm.plan_schema import (
     PlanStep,
     RenameStep,
     SelectColumnsStep,
+    TextCleanStep,
+    UnionStep,
 )
 
 _OPERATOR_SQL = {"=": "=", "!=": "<>", ">": ">", "<": "<", ">=": ">=", "<=": "<="}
@@ -171,9 +174,57 @@ class _Compiler:
         group_by_sql = f" GROUP BY {', '.join(group_cols)}" if group_cols else ""
         return f"SELECT {select_list} FROM {target_ref} AS {target_sql}{group_by_sql}"
 
+    def _compile_cast(self, step: CastStep) -> str:
+        target_ref = self._resolve(step.target)
+        if not step.mapping:
+            raise SQLValidationError(f"cast step '{step.output_alias}' has no column mappings")
+        type_sql_map = {
+            "string": "TEXT",
+            "integer": "INTEGER",
+            "float": "REAL",
+            "date": "DATE",
+            "boolean": "BOOLEAN",
+        }
+        select_exprs = [
+            f"CAST({quote_identifier(step.target)}.{quote_identifier(col)} AS {type_sql_map.get(tgt, 'TEXT')}) AS {quote_identifier(col)}"
+            for col, tgt in step.mapping.items()
+        ]
+        # Include all other columns from target by default
+        return f"SELECT {quote_identifier(step.target)}.*, {', '.join(select_exprs)} FROM {target_ref} AS {quote_identifier(step.target)}"
+
+    def _compile_text_clean(self, step: TextCleanStep) -> str:
+        target_ref = self._resolve(step.target)
+        if not step.operations:
+            raise SQLValidationError(f"text_clean step '{step.output_alias}' has no operations")
+        select_exprs = []
+        for col, op in step.operations.items():
+            col_sql = f"{quote_identifier(step.target)}.{quote_identifier(col)}"
+            if op == "trim":
+                expr = f"TRIM({col_sql})"
+            elif op == "upper":
+                expr = f"UPPER({col_sql})"
+            elif op == "lower":
+                expr = f"LOWER({col_sql})"
+            else:
+                expr = col_sql
+            select_exprs.append(f"{expr} AS {quote_identifier(col)}")
+        return f"SELECT {quote_identifier(step.target)}.*, {', '.join(select_exprs)} FROM {target_ref} AS {quote_identifier(step.target)}"
+
+    def _compile_union(self, step: UnionStep) -> str:
+        if not step.inputs or len(step.inputs) < 2:
+            raise SQLValidationError(f"union step '{step.output_alias}' requires at least 2 input datasets")
+        queries = []
+        for inp in step.inputs:
+            ref = self._resolve(inp)
+            queries.append(f"SELECT * FROM {ref} AS {quote_identifier(inp)}")
+        keyword = " UNION " if step.distinct else " UNION ALL "
+        return keyword.join(queries)
+
     def _compile_step(self, step: PlanStep) -> str:
         if isinstance(step, JoinStep):
             return self._compile_join(step)
+        if isinstance(step, UnionStep):
+            return self._compile_union(step)
         if isinstance(step, FilterStep):
             return self._compile_filter(step)
         if isinstance(step, DropNullsStep):
@@ -186,6 +237,10 @@ class _Compiler:
             return self._compile_select_columns(step)
         if isinstance(step, AggregateStep):
             return self._compile_aggregate(step)
+        if isinstance(step, CastStep):
+            return self._compile_cast(step)
+        if isinstance(step, TextCleanStep):
+            return self._compile_text_clean(step)
         raise SQLValidationError(f"Unsupported step type: {step.type!r}")  # pragma: no cover - schema prevents this
 
     def compile(self, target_alias: str | None = None) -> CompiledSQL:

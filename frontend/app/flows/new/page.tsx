@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api-client";
 import { useActor } from "@/lib/actor-context";
 import type { Connection, Flow, PlanVersion, Run } from "@/lib/types";
@@ -33,6 +34,11 @@ import {
   Plus,
   Layers,
   ChevronDown,
+  Download,
+  Upload,
+  Save,
+  Check,
+  History,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -42,7 +48,11 @@ interface ChatMessage {
   timestamp: string;
 }
 
-export default function FlowStudioPage() {
+function FlowStudioContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const flowIdParam = searchParams.get("flowId");
+
   const { actorEmail } = useActor();
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selectedConnectionId, setSelectedConnectionId] = useState<string>("");
@@ -53,6 +63,12 @@ export default function FlowStudioPage() {
 
   const [currentFlow, setCurrentFlow] = useState<Flow | null>(null);
   const [activePlan, setActivePlan] = useState<PlanVersion | null>(null);
+  const [draftPlan, setDraftPlan] = useState<any | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
+  const [isSavingCheckpoint, setIsSavingCheckpoint] = useState<boolean>(false);
+  const [isApprovingPlan, setIsApprovingPlan] = useState<boolean>(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
+  const [versionHistory, setVersionHistory] = useState<PlanVersion[]>([]);
   const [latestPreviewRun, setLatestPreviewRun] = useState<Run | null>(null);
   const [latestExecuteRun, setLatestExecuteRun] = useState<Run | null>(null);
 
@@ -77,14 +93,70 @@ export default function FlowStudioPage() {
     },
   ]);
 
+  const [isUploadingFile, setIsUploadingFile] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Load connections on mount
+  async function refreshConnections() {
+    const conns = await api.listConnections(actorEmail);
+    setConnections(conns);
+    return conns;
+  }
+
   useEffect(() => {
-    api.listConnections(actorEmail).then((conns) => {
-      setConnections(conns);
+    refreshConnections().then((conns) => {
       const sourceConn = conns.find((c) => c.type === "sqlite" || c.type === "postgres" || c.type === "mysql");
-      if (sourceConn) setSelectedConnectionId(sourceConn.id);
+      if (sourceConn && !selectedConnectionId) setSelectedConnectionId(sourceConn.id);
     });
   }, [actorEmail]);
+
+  // Load flow if flowId exists in URL query parameter (persistence on refresh)
+  useEffect(() => {
+    if (!flowIdParam) return;
+    api
+      .getFlow(actorEmail, flowIdParam)
+      .then(async (flow) => {
+        setCurrentFlow(flow);
+        if (flow.source_connection_id) {
+          setSelectedConnectionId(flow.source_connection_id);
+        }
+        if (flow.active_plan_version_id || flow.current_version_id) {
+          try {
+            const planVer = await api.getActivePlan(actorEmail, flow.id);
+            setActivePlan(planVer);
+            setDraftPlan(planVer.plan);
+            setHasUnsavedChanges(false);
+          } catch (err) {
+            console.error("Failed to load active plan for flow:", err);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to restore flow from URL param:", err);
+      });
+  }, [actorEmail, flowIdParam]);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    setIsUploadingFile(true);
+    setError(null);
+    try {
+      const newConn = await api.uploadFile(actorEmail, file);
+      const conns = await refreshConnections();
+      setSelectedConnectionId(newConn.id);
+      // Auto-load schema for newly uploaded connection
+      const schema = await api.getConnectionSchema(actorEmail, newConn.id);
+      setDatabaseTables(schema.tables || []);
+    } catch (err) {
+      console.error("Failed to upload file:", err);
+      setError(err instanceof ApiError ? err.message : "Failed to upload file");
+    } finally {
+      setIsUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
 
   // Load database tables whenever selectedConnectionId changes
   useEffect(() => {
@@ -137,6 +209,7 @@ export default function FlowStudioPage() {
           source_connection_id: selectedConnectionId,
         });
         setCurrentFlow(flow);
+        window.history.replaceState(null, "", `/flows/new?flowId=${flow.id}`);
       }
 
       const planVer = await api.generatePlan(actorEmail, flow.id, prompt);
@@ -269,11 +342,155 @@ export default function FlowStudioPage() {
     }
   }
 
+  function exportToCsv(rows: Record<string, unknown>[] | null, filename: string = "export.csv") {
+    if (!rows || rows.length === 0) return;
+    const headers = Object.keys(rows[0]);
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) =>
+        headers
+          .map((header) => {
+            const val = row[header];
+            if (val === null || val === undefined) return "";
+            const strVal = String(val).replace(/"/g, '""');
+            return `"${strVal}"`;
+          })
+          .join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  // Keep draftPlan in sync when activePlan is updated from backend
+  useEffect(() => {
+    if (activePlan?.plan) {
+      setDraftPlan(activePlan.plan);
+      setHasUnsavedChanges(false);
+    }
+  }, [activePlan]);
+
+  const displayPlan = draftPlan || activePlan?.plan;
+
+  // Save Checkpoint: commits draftPlan to flow_plan_versions
+  async function handleSaveCheckpoint(summary?: string) {
+    if (!currentFlow || !draftPlan) return;
+    setIsSavingCheckpoint(true);
+    setError(null);
+    try {
+      const changeSummary = summary || `Saved checkpoint (${new Date().toLocaleTimeString()})`;
+      const updatedVersion = await api.editPlan(
+        actorEmail,
+        currentFlow.id,
+        draftPlan,
+        changeSummary,
+        activePlan?.id
+      );
+      setActivePlan(updatedVersion);
+      setDraftPlan(updatedVersion.plan);
+      setHasUnsavedChanges(false);
+
+      const refreshedFlow = await api.getFlow(actorEmail, currentFlow.id);
+      setCurrentFlow(refreshedFlow);
+
+      // Refresh version list if modal is open
+      if (isHistoryModalOpen) {
+        const history = await api.listVersions(actorEmail, currentFlow.id);
+        setVersionHistory(history);
+      }
+    } catch (err) {
+      console.error("Failed to save checkpoint:", err);
+      setError(err instanceof ApiError ? err.message : "Failed to save checkpoint");
+    } finally {
+      setIsSavingCheckpoint(false);
+    }
+  }
+
+  // Approve current or active version for production run/schedule
+  async function handleApproveCurrentPlan() {
+    if (!currentFlow || !activePlan) return;
+    setIsApprovingPlan(true);
+    setError(null);
+    try {
+      // If there are unsaved draft changes, save checkpoint first
+      if (hasUnsavedChanges && draftPlan) {
+        await handleSaveCheckpoint("Auto-saved before approval");
+      }
+      await api.approvePlan(actorEmail, currentFlow.id, activePlan.id);
+      const refreshedFlow = await api.getFlow(actorEmail, currentFlow.id);
+      setCurrentFlow(refreshedFlow);
+    } catch (err) {
+      console.error("Failed to approve plan:", err);
+      setError(err instanceof ApiError ? err.message : "Failed to approve plan");
+    } finally {
+      setIsApprovingPlan(false);
+    }
+  }
+
+  // Open Version History Modal
+  async function handleOpenHistoryModal() {
+    if (!currentFlow) return;
+    setIsHistoryModalOpen(true);
+    try {
+      const history = await api.listVersions(actorEmail, currentFlow.id);
+      setVersionHistory(history);
+    } catch (err) {
+      console.error("Failed to fetch version history:", err);
+    }
+  }
+
+  // Restore a past version (creates new immutable version with that plan_json)
+  async function handleRestoreVersion(versionId: string) {
+    if (!currentFlow) return;
+    try {
+      const restored = await api.restoreVersion(actorEmail, currentFlow.id, versionId);
+      setActivePlan(restored);
+      setDraftPlan(restored.plan);
+      setHasUnsavedChanges(false);
+
+      const refreshedFlow = await api.getFlow(actorEmail, currentFlow.id);
+      setCurrentFlow(refreshedFlow);
+
+      const history = await api.listVersions(actorEmail, currentFlow.id);
+      setVersionHistory(history);
+    } catch (err) {
+      console.error("Failed to restore version:", err);
+      setError(err instanceof ApiError ? err.message : "Failed to restore version");
+    }
+  }
+
+  // Global Ctrl+S / Cmd+S shortcut to save checkpoint
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (hasUnsavedChanges && currentFlow && draftPlan) {
+          handleSaveCheckpoint();
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [hasUnsavedChanges, currentFlow, draftPlan, activePlan]);
+
   const [nodeDataRows, setNodeDataRows] = useState<Record<string, unknown>[] | null>(null);
   const [isLoadingNodeData, setIsLoadingNodeData] = useState(false);
 
   async function handleAddTableToCanvas(tableName: string, schemaName: string = "main") {
     try {
+      if (!selectedConnectionId) {
+        setError("Please select or upload a data source connection first.");
+        return;
+      }
+
       let flow = currentFlow;
       if (!flow) {
         flow = await api.createFlow(actorEmail, {
@@ -282,13 +499,14 @@ export default function FlowStudioPage() {
           source_connection_id: selectedConnectionId,
         });
         setCurrentFlow(flow);
+        window.history.replaceState(null, "", `/flows/new?flowId=${flow.id}`);
       }
 
-      // Check if table is already in plan
-      const existingSources = activePlan?.plan?.sources || [];
-      const alreadyExists = existingSources.some((s) => s.table_name === tableName);
+      // Check if table is already in current plan
+      const basePlan = draftPlan || activePlan?.plan || { sources: [], steps: [], output_alias: "" };
+      const existingSources = basePlan.sources || [];
+      const alreadyExists = existingSources.some((s: any) => s.table_name === tableName);
       if (alreadyExists) {
-        // Just select this table node for profiling
         const sourceNode = {
           label: tableName,
           type: "source",
@@ -306,8 +524,8 @@ export default function FlowStudioPage() {
         { alias: newAlias, schema_name: schemaName, table_name: tableName },
       ];
 
-      const currentSteps = activePlan?.plan?.steps || [];
-      const outputAlias = activePlan?.plan?.output_alias || newAlias;
+      const currentSteps = basePlan.steps || [];
+      const outputAlias = basePlan.output_alias || newAlias;
 
       const newPlanDraft = {
         sources: updatedSources,
@@ -316,11 +534,9 @@ export default function FlowStudioPage() {
         summary: `Added ${tableName} as a data source to the workflow.`,
       };
 
-      const updatedVersion = await api.editPlan(actorEmail, flow.id, newPlanDraft);
-      setActivePlan(updatedVersion);
-
-      const refreshedFlow = await api.getFlow(actorEmail, flow.id);
-      setCurrentFlow(refreshedFlow);
+      // Set local draft plan and mark unsaved
+      setDraftPlan(newPlanDraft);
+      setHasUnsavedChanges(true);
 
       // Select newly added table node
       handleNodeSelect({
@@ -429,10 +645,11 @@ export default function FlowStudioPage() {
     rightCol: string;
     outputAlias: string;
   }) {
-    if (!currentFlow || !activePlan) return;
+    if (!currentFlow) return;
     try {
-      const currentSources = activePlan.plan.sources || [];
-      const currentSteps = activePlan.plan.steps || [];
+      const basePlan = draftPlan || activePlan?.plan || { sources: [], steps: [], output_alias: "" };
+      const currentSources = basePlan.sources || [];
+      const currentSteps = basePlan.steps || [];
 
       const newJoinStep = {
         type: "join" as const,
@@ -450,11 +667,8 @@ export default function FlowStudioPage() {
         summary: `Joined ${joinModalConfig.leftTable} and ${joinModalConfig.rightTable} on ${config.leftCol} = ${config.rightCol} (${config.joinType} join).`,
       };
 
-      const updatedVersion = await api.editPlan(actorEmail, currentFlow.id, newPlanDraft);
-      setActivePlan(updatedVersion);
-
-      const refreshedFlow = await api.getFlow(actorEmail, currentFlow.id);
-      setCurrentFlow(refreshedFlow);
+      setDraftPlan(newPlanDraft);
+      setHasUnsavedChanges(true);
 
       // Select newly added join node
       handleNodeSelect({
@@ -467,6 +681,48 @@ export default function FlowStudioPage() {
     } catch (err) {
       console.error("Failed to add join step:", err);
       setError(err instanceof ApiError ? err.message : "Failed to add join to flow");
+    }
+  }
+
+  async function handleApplyUnion(config: {
+    inputs: string[];
+    distinct: boolean;
+    outputAlias: string;
+  }) {
+    if (!currentFlow) return;
+    try {
+      const basePlan = draftPlan || activePlan?.plan || { sources: [], steps: [], output_alias: "" };
+      const currentSources = basePlan.sources || [];
+      const currentSteps = basePlan.steps || [];
+
+      const newUnionStep = {
+        type: "union" as const,
+        inputs: config.inputs,
+        distinct: config.distinct,
+        output_alias: config.outputAlias,
+      };
+
+      const newPlanDraft = {
+        sources: currentSources,
+        steps: [...currentSteps, newUnionStep],
+        output_alias: config.outputAlias,
+        summary: `Stacked datasets ${config.inputs.join(" and ")} (${config.distinct ? "UNION" : "UNION ALL"}).`,
+      };
+
+      setDraftPlan(newPlanDraft);
+      setHasUnsavedChanges(true);
+
+      // Select newly added union node
+      handleNodeSelect({
+        label: config.outputAlias,
+        type: "union",
+        alias: config.outputAlias,
+        description: `Union stack of ${config.inputs.join(", ")}`,
+        details: newUnionStep as unknown as Record<string, unknown>,
+      } as PrepNodeData);
+    } catch (err) {
+      console.error("Failed to add union step:", err);
+      setError(err instanceof ApiError ? err.message : "Failed to add union to flow");
     }
   }
 
@@ -494,10 +750,11 @@ export default function FlowStudioPage() {
   }
 
   async function handleApplyCustomStep(newStep: any) {
-    if (!currentFlow || !activePlan) return;
+    if (!currentFlow) return;
     try {
-      const currentSources = activePlan.plan.sources || [];
-      const currentSteps = [...(activePlan.plan.steps || [])];
+      const basePlan = draftPlan || activePlan?.plan || { sources: [], steps: [], output_alias: "" };
+      const currentSources = basePlan.sources || [];
+      const currentSteps = [...(basePlan.steps || [])];
 
       // Update any downstream step that previously referenced sourceAlias (if needed) or append step
       const oldAlias = stepActionModal.sourceAlias;
@@ -521,7 +778,7 @@ export default function FlowStudioPage() {
       currentSteps.push(newStep);
 
       // If sourceAlias was the output_alias, update output_alias to newAlias
-      let outputAlias = activePlan.plan.output_alias;
+      let outputAlias = basePlan.output_alias;
       if (outputAlias === oldAlias) {
         outputAlias = newAlias;
       }
@@ -533,11 +790,8 @@ export default function FlowStudioPage() {
         summary: `Added ${newStep.type} step on ${oldAlias} (output: ${newAlias}).`,
       };
 
-      const updatedVersion = await api.editPlan(actorEmail, currentFlow.id, newPlanDraft);
-      setActivePlan(updatedVersion);
-
-      const refreshedFlow = await api.getFlow(actorEmail, currentFlow.id);
-      setCurrentFlow(refreshedFlow);
+      setDraftPlan(newPlanDraft);
+      setHasUnsavedChanges(true);
 
       // Select newly added step node
       handleNodeSelect({
@@ -550,6 +804,67 @@ export default function FlowStudioPage() {
     } catch (err) {
       console.error("Failed to insert step on edge:", err);
       setError(err instanceof ApiError ? err.message : "Failed to add step to flow");
+    }
+  }
+
+  async function handleDeleteStep(aliasToDelete: string) {
+    if (!currentFlow) return;
+    try {
+      const basePlan = draftPlan || activePlan?.plan || { sources: [], steps: [], output_alias: "" };
+      const currentSources = basePlan.sources || [];
+      const currentSteps = [...(basePlan.steps || [])];
+
+      const stepIndex = currentSteps.findIndex((s: any) => s.output_alias === aliasToDelete);
+      if (stepIndex === -1) return;
+
+      const stepToDelete = currentSteps[stepIndex];
+      // Find parent input alias for the step being deleted
+      let parentAlias = "";
+      if (stepToDelete.type === "join") {
+        parentAlias = stepToDelete.left;
+      } else if ("target" in stepToDelete && stepToDelete.target) {
+        parentAlias = stepToDelete.target;
+      }
+
+      if (!parentAlias && currentSources.length > 0) {
+        parentAlias = currentSources[0].alias;
+      }
+
+      // Rewire downstream steps referencing aliasToDelete to point to parentAlias
+      currentSteps.forEach((step: any) => {
+        if (step.type === "join") {
+          if (step.left === aliasToDelete) step.left = parentAlias;
+          if (step.right === aliasToDelete) step.right = parentAlias;
+        } else if ("target" in step && step.target === aliasToDelete) {
+          step.target = parentAlias;
+        }
+      });
+
+      // Remove step
+      currentSteps.splice(stepIndex, 1);
+
+      // Rewire output_alias if needed
+      let outputAlias = basePlan.output_alias;
+      if (outputAlias === aliasToDelete) {
+        outputAlias = currentSteps.length > 0 ? currentSteps[currentSteps.length - 1].output_alias : parentAlias;
+      }
+
+      const newPlanDraft = {
+        sources: currentSources,
+        steps: currentSteps,
+        output_alias: outputAlias,
+        summary: `Deleted step '${aliasToDelete}', rewired downstream to '${parentAlias}'.`,
+      };
+
+      setDraftPlan(newPlanDraft);
+      setHasUnsavedChanges(true);
+
+      // Clear selection or select parent node
+      setSelectedNode(null);
+      setNodeDataRows(null);
+    } catch (err) {
+      console.error("Failed to delete step:", err);
+      setError(err instanceof ApiError ? err.message : "Failed to delete step");
     }
   }
 
@@ -637,11 +952,86 @@ export default function FlowStudioPage() {
                   </option>
                 ))}
             </select>
+
+            {/* Upload File Button */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              accept=".csv,.xlsx,.xls,.json,.txt"
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploadingFile}
+              className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded transition-colors cursor-pointer shadow-2xs"
+              title="Upload CSV, Excel, or JSON as a new data source"
+            >
+              {isUploadingFile ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+              {isUploadingFile ? "Uploading..." : "Upload File"}
+            </button>
           </div>
         </div>
 
         {/* Action Buttons & Copilot Toggle */}
         <div className="flex items-center gap-2">
+          {/* Checkpoint Version Info & Save Button */}
+          {currentFlow && (
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg p-1">
+              <button
+                onClick={handleOpenHistoryModal}
+                className="flex items-center gap-1 px-2 py-1 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-200/60 rounded transition-colors cursor-pointer"
+                title="View version history & restore previous checkpoints"
+              >
+                <History className="w-3.5 h-3.5 text-slate-500" />
+                <span>{activePlan ? `v${activePlan.version_number}` : "v1"}</span>
+              </button>
+
+              <button
+                onClick={() => handleSaveCheckpoint()}
+                disabled={isSavingCheckpoint || (!hasUnsavedChanges && Boolean(activePlan))}
+                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded transition-all cursor-pointer shadow-2xs ${
+                  hasUnsavedChanges
+                    ? "bg-amber-500 hover:bg-amber-600 text-white animate-pulse"
+                    : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 disabled:opacity-50"
+                }`}
+                title="Save Checkpoint (Ctrl+S / Cmd+S)"
+              >
+                {isSavingCheckpoint ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Save className="w-3.5 h-3.5" />
+                )}
+                <span>{hasUnsavedChanges ? "Save Checkpoint *" : "Saved"}</span>
+              </button>
+            </div>
+          )}
+
+          {/* Approve Plan Button */}
+          {currentFlow && (
+            <button
+              onClick={handleApproveCurrentPlan}
+              disabled={isApprovingPlan || currentFlow.approved_version_id === activePlan?.id}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-sm ${
+                currentFlow.approved_version_id === activePlan?.id
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-300"
+                  : "bg-emerald-600 hover:bg-emerald-700 text-white"
+              }`}
+              title="Mark this version as approved for production execution & schedules"
+            >
+              {isApprovingPlan ? (
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Check className="w-3.5 h-3.5" />
+              )}
+              <span>
+                {currentFlow.approved_version_id === activePlan?.id
+                  ? "Approved (Prod)"
+                  : "Approve Plan"}
+              </span>
+            </button>
+          )}
+
           <button
             onClick={handleRunFlow}
             disabled={!currentFlow || isRunning || isAiGenerating}
@@ -649,6 +1039,17 @@ export default function FlowStudioPage() {
           >
             {isRunning ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
             {isRunning ? "Running..." : "Run Flow"}
+          </button>
+
+          {/* Export to CSV Button */}
+          <button
+            onClick={() => exportToCsv(activeRows, `${currentFlow?.name || "tableau_prep_export"}.csv`)}
+            disabled={!activeRows || activeRows.length === 0}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-40 transition-all cursor-pointer shadow-sm"
+            title="Export output records to CSV"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Export CSV
           </button>
 
           <button
@@ -816,13 +1217,14 @@ export default function FlowStudioPage() {
           } transition-all duration-300`}
         >
           <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-xs">
-            {activePlan ? (
+            {displayPlan ? (
               <VisualFlowCanvas
-                plan={activePlan.plan}
+                plan={displayPlan}
                 onNodeSelect={handleNodeSelect}
                 onTableDrop={(tbl) => handleAddTableToCanvas(tbl)}
                 onConnectNodes={handleConnectNodes}
                 onAddStepOnEdge={handleAddStepOnEdge}
+                onDeleteStep={handleDeleteStep}
                 className="h-[460px]"
               />
             ) : (
@@ -982,6 +1384,14 @@ export default function FlowStudioPage() {
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                     <Table className="w-3.5 h-3.5 text-blue-600" /> Sample Data Rows ({activeRows.length} Rows)
                   </h4>
+                  <button
+                    onClick={() => exportToCsv(activeRows, `${selectedNode?.alias || "node"}_data.csv`)}
+                    className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-md transition-colors cursor-pointer shadow-2xs"
+                    title="Export this step's sample rows to CSV"
+                  >
+                    <Download className="w-3 h-3" />
+                    Download CSV
+                  </button>
                 </div>
                 <div className="max-h-48 overflow-y-auto border border-slate-200 rounded-lg shadow-inner">
                   <DataTable rows={activeRows} />
@@ -1000,7 +1410,8 @@ export default function FlowStudioPage() {
         rightTable={joinModalConfig.rightTable}
         leftColumns={joinModalConfig.leftColumns}
         rightColumns={joinModalConfig.rightColumns}
-        onConfirm={handleApplyJoin}
+        onConfirmJoin={handleApplyJoin}
+        onConfirmUnion={handleApplyUnion}
       />
 
       {/* Tableau Transformation Step Action Modal (+ button on arrows) */}
@@ -1011,6 +1422,105 @@ export default function FlowStudioPage() {
         columns={stepActionModal.columns}
         onApplyStep={handleApplyCustomStep}
       />
+
+      {/* Version History Checkpoint Modal */}
+      {isHistoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+              <div className="flex items-center gap-2">
+                <History className="w-4 h-4 text-blue-600" />
+                <h3 className="text-sm font-bold text-slate-800">Version History & Checkpoints</h3>
+              </div>
+              <button
+                onClick={() => setIsHistoryModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-100 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-5 max-h-96 overflow-y-auto space-y-3">
+              {versionHistory.length === 0 ? (
+                <div className="text-center py-8 text-slate-400 text-xs">
+                  No previous checkpoints found.
+                </div>
+              ) : (
+                versionHistory.map((ver) => {
+                  const isCurrent = activePlan?.id === ver.id;
+                  const isApproved = currentFlow?.approved_version_id === ver.id;
+
+                  return (
+                    <div
+                      key={ver.id}
+                      className={`p-3 rounded-lg border flex items-center justify-between transition-all ${
+                        isCurrent
+                          ? "border-blue-300 bg-blue-50/40"
+                          : "border-slate-200 bg-white hover:bg-slate-50"
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-xs text-slate-800">
+                            Version {ver.version_number}
+                          </span>
+                          {isCurrent && (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+                              Active Editor
+                            </span>
+                          )}
+                          {isApproved && (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full flex items-center gap-1">
+                              <Check className="w-3 h-3" /> Approved (Prod)
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-500">
+                          {ver.change_summary || "Checkpoint snapshot"}
+                        </p>
+                        <span className="text-[10px] text-slate-400">
+                          {new Date(ver.created_at).toLocaleString()} • {ver.source}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {!isCurrent && (
+                          <button
+                            onClick={() => {
+                              handleRestoreVersion(ver.id);
+                              setIsHistoryModalOpen(false);
+                            }}
+                            className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors cursor-pointer"
+                          >
+                            Restore
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50 flex justify-end">
+              <button
+                onClick={() => setIsHistoryModalOpen(false)}
+                className="px-4 py-1.5 text-xs font-semibold bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function FlowStudioPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400">Loading Flow Studio...</div>}>
+      <FlowStudioContent />
+    </Suspense>
   );
 }

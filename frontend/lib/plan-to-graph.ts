@@ -10,6 +10,7 @@ export interface PrepNodeData extends Record<string, unknown> {
   details?: Record<string, unknown>;
   columnsCount?: number;
   isSelected?: boolean;
+  onDeleteStep?: (alias: string) => void;
 }
 
 const STEP_COLORS: Record<string, { bg: string; border: string; text: string; badge: string }> = {
@@ -21,6 +22,9 @@ const STEP_COLORS: Record<string, { bg: string; border: string; text: string; ba
   dedupe: { bg: "bg-indigo-50", border: "border-indigo-400", text: "text-indigo-700", badge: "bg-indigo-100 text-indigo-800" },
   rename: { bg: "bg-cyan-50", border: "border-cyan-400", text: "text-cyan-700", badge: "bg-cyan-100 text-cyan-800" },
   select_columns: { bg: "bg-teal-50", border: "border-teal-400", text: "text-teal-700", badge: "bg-teal-100 text-teal-800" },
+  union: { bg: "bg-fuchsia-50", border: "border-fuchsia-400", text: "text-fuchsia-700", badge: "bg-fuchsia-100 text-fuchsia-800" },
+  cast: { bg: "bg-violet-50", border: "border-violet-400", text: "text-violet-700", badge: "bg-violet-100 text-violet-800" },
+  text_clean: { bg: "bg-sky-50", border: "border-sky-400", text: "text-sky-700", badge: "bg-sky-100 text-sky-800" },
   output: { bg: "bg-orange-50", border: "border-orange-500", text: "text-orange-800", badge: "bg-orange-100 text-orange-900" },
 };
 
@@ -82,6 +86,14 @@ export function planToFlowGraph(plan: PlanDraft): { nodes: Node<PrepNodeData>[];
       description = `Rename: ${keys.slice(0, 2).map((k) => `${k} ➔ ${step.mapping[k]}`).join(", ")}`;
     } else if (step.type === "select_columns") {
       description = `Select ${step.columns.length} columns`;
+    } else if (step.type === "union") {
+      description = `Stack ${step.inputs.length} datasets (${step.distinct ? "UNION" : "UNION ALL"})`;
+    } else if ((step as any).type === "cast") {
+      const keys = Object.keys((step as any).mapping || {});
+      description = `Cast: ${keys.slice(0, 2).map((k) => `${k} as ${(step as any).mapping[k]}`).join(", ")}`;
+    } else if ((step as any).type === "text_clean") {
+      const keys = Object.keys((step as any).operations || {});
+      description = `Clean: ${keys.slice(0, 2).map((k) => `${(step as any).operations[k]}(${k})`).join(", ")}`;
     }
 
     // Determine Y position based on parent inputs
@@ -93,6 +105,14 @@ export function planToFlowGraph(plan: PlanDraft): { nodes: Node<PrepNodeData>[];
       const rightNode = nodes.find((n) => n.id === rightParentId);
       if (leftNode && rightNode) {
         targetY = (leftNode.position.y + rightNode.position.y) / 2;
+      }
+    } else if (step.type === "union" && step.inputs.length > 0) {
+      const parentNodes = step.inputs
+        .map((inp) => nodes.find((n) => n.id === aliasToNodeId[inp]))
+        .filter(Boolean);
+      if (parentNodes.length > 0) {
+        const sumY = parentNodes.reduce((acc, n) => acc + (n?.position.y || 0), 0);
+        targetY = sumY / parentNodes.length;
       }
     }
 
@@ -134,6 +154,20 @@ export function planToFlowGraph(plan: PlanDraft): { nodes: Node<PrepNodeData>[];
           data: { sourceAlias: step.right, targetAlias: outputAlias },
         });
       }
+    } else if (step.type === "union") {
+      step.inputs.forEach((inp, iIdx) => {
+        if (aliasToNodeId[inp]) {
+          edges.push({
+            id: `e-${aliasToNodeId[inp]}-${nodeId}-${iIdx}`,
+            source: aliasToNodeId[inp],
+            target: nodeId,
+            type: "prepEdge",
+            animated: true,
+            style: { stroke: "#d946ef", strokeWidth: 2 },
+            data: { sourceAlias: inp, targetAlias: outputAlias },
+          });
+        }
+      });
     } else if ("target" in step && step.target && aliasToNodeId[step.target]) {
       edges.push({
         id: `e-${aliasToNodeId[step.target]}-${nodeId}`,

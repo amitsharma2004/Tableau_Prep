@@ -91,12 +91,55 @@ export default function ConnectionsPage() {
       <div>
         <h1 className="text-2xl font-semibold">Connections</h1>
         <p className="text-slate-600 mt-1">
-          Source databases must use read-only credentials - this is verified when you create the connection.
+          Connect to databases with read-only credentials or upload files (CSV, Excel, JSON) to start preparing data.
         </p>
       </div>
 
+      {/* File Upload Data Source Card */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5 max-w-2xl shadow-xs">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-bold text-blue-950 flex items-center gap-2">
+              <span className="p-1 bg-blue-600 text-white rounded">
+                📁
+              </span>
+              Upload File Source (CSV, Excel, JSON)
+            </h2>
+            <p className="text-xs text-blue-800/80 mt-1">
+              Directly upload your tabular files — they are automatically parsed and converted into queryable datasets.
+            </p>
+          </div>
+          <div>
+            <label className="cursor-pointer px-4 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-sm flex items-center gap-1.5">
+              <span>{submitting ? "Uploading..." : "Choose File"}</span>
+              <input
+                type="file"
+                disabled={submitting}
+                accept=".csv,.xlsx,.xls,.json,.txt"
+                className="hidden"
+                onChange={async (e) => {
+                  const files = e.target.files;
+                  if (!files || files.length === 0) return;
+                  setSubmitting(true);
+                  setError(null);
+                  try {
+                    await api.uploadFile(actorEmail, files[0]);
+                    await load();
+                  } catch (err) {
+                    setError(err instanceof ApiError ? err.message : "Failed to upload file");
+                  } finally {
+                    setSubmitting(false);
+                    e.target.value = "";
+                  }
+                }}
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-lg p-6 space-y-4 max-w-2xl">
-        <h2 className="font-medium text-slate-900">New connection</h2>
+        <h2 className="font-medium text-slate-900">New Database Connection</h2>
 
         <div className="grid grid-cols-2 gap-4">
           <Field label="Name">

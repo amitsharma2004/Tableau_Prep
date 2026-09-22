@@ -21,7 +21,9 @@ class FlowRead(BaseModel):
     tableau_connection_id: str | None
     target_datasource_name: str | None
     status: str
-    active_plan_version_id: str | None
+    current_version_id: str | None = None
+    approved_version_id: str | None = None
+    active_plan_version_id: str | None = None
     created_by: str
     created_at: datetime
     updated_at: datetime

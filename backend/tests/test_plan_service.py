@@ -132,10 +132,11 @@ def test_edit_plan_creates_human_edited_version_and_stays_pending(db, flow, fake
     assert flow.active_plan_version_id == v2.id
 
 
-def test_edit_plan_rejected_outside_pending_approval(db, flow):
+def test_edit_plan_rejected_during_running(db, flow):
+    flow.status = FlowStatus.RUNNING.value
     edited_draft = PlanDraft.model_validate(EDITED_PLAN)
     with pytest.raises(DomainError):
-        plan_service.edit_plan(db, flow, edited_draft, actor="shubhanshu@tnqtech.com")  # flow is still DRAFT
+        plan_service.edit_plan(db, flow, edited_draft, actor="shubhanshu@tnqtech.com")
 
 
 def test_approve_plan_stamps_approver_and_transitions_flow(db, flow, fake_llm_plan):

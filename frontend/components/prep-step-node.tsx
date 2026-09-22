@@ -13,6 +13,7 @@ import {
   Columns,
   FileOutput,
   Tag,
+  Layers,
 } from "lucide-react";
 
 function getStepIcon(type: string) {
@@ -23,6 +24,8 @@ function getStepIcon(type: string) {
       return <Filter className="w-4 h-4 text-amber-600" />;
     case "join":
       return <GitMerge className="w-4 h-4 text-emerald-600" />;
+    case "union":
+      return <Layers className="w-4 h-4 text-fuchsia-600" />;
     case "aggregate":
       return <BarChart3 className="w-4 h-4 text-purple-600" />;
     case "drop_nulls":
@@ -33,6 +36,10 @@ function getStepIcon(type: string) {
       return <Tag className="w-4 h-4 text-cyan-600" />;
     case "select_columns":
       return <Columns className="w-4 h-4 text-teal-600" />;
+    case "cast":
+      return <Tag className="w-4 h-4 text-violet-600" />;
+    case "text_clean":
+      return <Columns className="w-4 h-4 text-sky-600" />;
     case "output":
       return <FileOutput className="w-4 h-4 text-orange-600" />;
     default:
@@ -68,13 +75,28 @@ function PrepStepNodeComponent({ data, selected }: NodeProps) {
             {nodeData.type}
           </span>
         </div>
-        <span
-          className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-            nodeData.badgeColor ?? "bg-slate-100 text-slate-600"
-          }`}
-        >
-          {nodeData.alias}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span
+            className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
+              nodeData.badgeColor ?? "bg-slate-100 text-slate-600"
+            }`}
+          >
+            {nodeData.alias}
+          </span>
+          {!isSource && !isOutput && nodeData.onDeleteStep && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                nodeData.onDeleteStep?.(nodeData.alias);
+              }}
+              title="Delete this step"
+              className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Body */}

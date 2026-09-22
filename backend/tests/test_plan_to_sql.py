@@ -98,3 +98,27 @@ def test_compile_plan_in_operator_binds_each_value_as_its_own_param():
 
     assert set(compiled.params.values()) == {"North", "South"}
     assert "IN (:p0, :p1)" in compiled.sql
+
+
+def test_compile_union_step():
+    plan_dict = {
+        "summary": "Union two tables",
+        "sources": [
+            {"alias": "q1_sales", "schema_name": "public", "table_name": "sales_q1"},
+            {"alias": "q2_sales", "schema_name": "public", "table_name": "sales_q2"},
+        ],
+        "steps": [
+            {
+                "type": "union",
+                "inputs": ["q1_sales", "q2_sales"],
+                "output_alias": "all_sales",
+                "distinct": False,
+            }
+        ],
+        "output_alias": "all_sales",
+    }
+    plan = PlanDraft.model_validate(plan_dict)
+    compiled = compile_plan(plan)
+    assert "UNION ALL" in compiled.sql
+    assert '"all_sales" AS (SELECT * FROM "public"."sales_q1" AS "q1_sales" UNION ALL SELECT * FROM "public"."sales_q2" AS "q2_sales")' in compiled.sql
+

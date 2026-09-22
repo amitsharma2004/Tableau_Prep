@@ -48,13 +48,14 @@ def create_or_update_schedule(
             f"Cannot schedule flow in status '{flow.status}'. The flow must be approved before scheduling."
         )
 
-    if not flow.active_plan_version_id:
-        raise DomainError("Flow has no active approved plan version to schedule.")
+    target_version_id = flow.approved_version_id or flow.active_plan_version_id
+    if not target_version_id:
+        raise DomainError("Flow has no approved plan version to schedule.")
 
-    # Validate active plan exists
-    plan_ver = db.get(PlanVersion, flow.active_plan_version_id)
+    # Validate approved plan exists
+    plan_ver = db.get(PlanVersion, target_version_id)
     if plan_ver is None:
-        raise DomainError("Flow active plan version does not exist.")
+        raise DomainError("Flow approved plan version does not exist.")
 
     next_run = calculate_next_run(req.cron_expression, req.timezone) if req.enabled else None
 
@@ -62,7 +63,7 @@ def create_or_update_schedule(
     if schedule is None:
         schedule = FlowSchedule(
             flow_id=flow.id,
-            plan_version_id=flow.active_plan_version_id,
+            plan_version_id=target_version_id,
             enabled=req.enabled,
             cron_expression=req.cron_expression,
             timezone=req.timezone,
@@ -71,7 +72,7 @@ def create_or_update_schedule(
         )
         db.add(schedule)
     else:
-        schedule.plan_version_id = flow.active_plan_version_id
+        schedule.plan_version_id = target_version_id
         schedule.enabled = req.enabled
         schedule.cron_expression = req.cron_expression
         schedule.timezone = req.timezone

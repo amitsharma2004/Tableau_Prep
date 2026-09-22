@@ -12,6 +12,8 @@ class PlanVersionRead(BaseModel):
     flow_id: str
     version_number: int
     source: str  # 'llm_generated' | 'human_edited'
+    parent_version_id: str | None = None
+    change_summary: str | None = None
     plan: PlanDraft
     approved_by: str | None
     approved_at: datetime | None
@@ -20,6 +22,12 @@ class PlanVersionRead(BaseModel):
 
 class PlanEditRequest(BaseModel):
     plan: PlanDraft
+    change_summary: str | None = None
+    base_version_id: str | None = None  # for optimistic concurrency protection
+
+
+class PlanRestoreRequest(BaseModel):
+    version_id: str
 
 
 class PlanGenerateRequest(BaseModel):

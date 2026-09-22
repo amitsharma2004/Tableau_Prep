@@ -68,6 +68,8 @@ export interface Flow {
   tableau_connection_id: string | null;
   target_datasource_name: string | null;
   status: FlowStatus;
+  current_version_id?: string | null;
+  approved_version_id?: string | null;
   active_plan_version_id: string | null;
   created_by: string;
   created_at: string;
@@ -155,14 +157,38 @@ export interface AggregateStep {
   aggregations: AggregationSpec[];
 }
 
+export interface CastStep {
+  type: "cast";
+  target: string;
+  output_alias: string;
+  mapping: Record<string, "string" | "integer" | "float" | "date" | "boolean">;
+}
+
+export interface TextCleanStep {
+  type: "text_clean";
+  target: string;
+  output_alias: string;
+  operations: Record<string, "trim" | "upper" | "lower">;
+}
+
+export interface UnionStep {
+  type: "union";
+  inputs: string[];
+  output_alias: string;
+  distinct?: boolean;
+}
+
 export type PlanStep =
   | FilterStep
   | DropNullsStep
   | DedupeStep
   | JoinStep
+  | UnionStep
   | RenameStep
   | SelectColumnsStep
-  | AggregateStep;
+  | AggregateStep
+  | CastStep
+  | TextCleanStep;
 
 export interface PlanDraft {
   summary: string;
@@ -176,6 +202,8 @@ export interface PlanVersion {
   flow_id: string;
   version_number: number;
   source: "llm_generated" | "human_edited";
+  parent_version_id?: string | null;
+  change_summary?: string | null;
   plan: PlanDraft;
   approved_by: string | null;
   approved_at: string | null;

@@ -11,6 +11,8 @@ import {
   Check,
   Plus,
   Trash,
+  Binary,
+  Type,
 } from "lucide-react";
 
 export interface StepActionModalProps {
@@ -21,7 +23,14 @@ export interface StepActionModalProps {
   onApplyStep: (step: any) => void;
 }
 
-type TabType = "rename" | "select_columns" | "filter" | "drop_nulls" | "dedupe";
+type TabType =
+  | "rename"
+  | "select_columns"
+  | "filter"
+  | "drop_nulls"
+  | "dedupe"
+  | "cast"
+  | "text_clean";
 
 export function StepActionModal({
   isOpen,
@@ -52,6 +61,16 @@ export function StepActionModal({
   // State for Dedupe
   const [dedupeCols, setDedupeCols] = useState<string[]>([]);
 
+  // State for Change Data Type (Cast)
+  const [castPairs, setCastPairs] = useState<
+    { column: string; targetType: "string" | "integer" | "float" | "date" | "boolean" }[]
+  >([{ column: columns[0] || "", targetType: "string" }]);
+
+  // State for Text Cleanup
+  const [textCleanPairs, setTextCleanPairs] = useState<
+    { column: string; operation: "trim" | "upper" | "lower" }[]
+  >([{ column: columns[0] || "", operation: "trim" }]);
+
   // Output alias
   const [outputAlias, setOutputAlias] = useState<string>(`${sourceAlias}_cleaned`);
 
@@ -60,6 +79,8 @@ export function StepActionModal({
     setSelectedCols(columns);
     setRenamePairs([{ oldCol: columns[0] || "", newCol: "" }]);
     setFilterConditions([{ column: columns[0] || "", operator: "=", value: "" }]);
+    setCastPairs([{ column: columns[0] || "", targetType: "string" }]);
+    setTextCleanPairs([{ column: columns[0] || "", operation: "trim" }]);
     setOutputAlias(`${sourceAlias}_cleaned`);
   }, [sourceAlias, columns]);
 
@@ -120,6 +141,34 @@ export function StepActionModal({
         output_alias: finalAlias,
         columns: dedupeCols.length > 0 ? dedupeCols : null,
       });
+    } else if (activeTab === "cast") {
+      const mapping: Record<string, string> = {};
+      castPairs.forEach((p) => {
+        if (p.column) {
+          mapping[p.column] = p.targetType;
+        }
+      });
+      if (Object.keys(mapping).length === 0) return;
+      onApplyStep({
+        type: "cast",
+        target: sourceAlias,
+        output_alias: finalAlias,
+        mapping,
+      });
+    } else if (activeTab === "text_clean") {
+      const operations: Record<string, string> = {};
+      textCleanPairs.forEach((p) => {
+        if (p.column) {
+          operations[p.column] = p.operation;
+        }
+      });
+      if (Object.keys(operations).length === 0) return;
+      onApplyStep({
+        type: "text_clean",
+        target: sourceAlias,
+        output_alias: finalAlias,
+        operations,
+      });
     }
 
     onClose();
@@ -127,7 +176,7 @@ export function StepActionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]">
         {/* Header */}
         <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/80 flex items-center justify-between">
           <div>
@@ -138,7 +187,7 @@ export function StepActionModal({
               </span>
             </h3>
             <p className="text-[11px] text-slate-500">
-              Transform, clean, filter, or rename fields like in Tableau Prep Builder
+              Transform, clean, filter, typecast, or rename fields like in Tableau Prep Builder
             </p>
           </div>
           <button
@@ -150,9 +199,11 @@ export function StepActionModal({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-200 bg-slate-50 px-4 gap-1 pt-2">
+        <div className="flex border-b border-slate-200 bg-slate-50 px-4 gap-1 pt-2 overflow-x-auto">
           {[
             { id: "rename", label: "Rename Field", icon: Tag },
+            { id: "cast", label: "Change Type", icon: Binary },
+            { id: "text_clean", label: "Text Cleanup", icon: Type },
             { id: "select_columns", label: "Keep / Remove", icon: Columns },
             { id: "filter", label: "Filter Values", icon: Filter },
             { id: "drop_nulls", label: "Drop Nulls", icon: Trash2 },
@@ -165,7 +216,7 @@ export function StepActionModal({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id as TabType)}
-                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? "border-blue-600 text-blue-600 bg-white rounded-t-lg shadow-2xs"
                     : "border-transparent text-slate-500 hover:text-slate-800"
@@ -236,7 +287,124 @@ export function StepActionModal({
             </div>
           )}
 
-          {/* TAB 2: SELECT / REMOVE COLUMNS */}
+          {/* TAB 2: CHANGE DATA TYPE (CAST) */}
+          {activeTab === "cast" && (
+            <div className="space-y-3">
+              <span className="text-slate-600 font-medium block">
+                Cast column data types (e.g. string to integer, number to date):
+              </span>
+              {castPairs.map((pair, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <select
+                    value={pair.column}
+                    onChange={(e) => {
+                      const updated = [...castPairs];
+                      updated[idx].column = e.target.value;
+                      setCastPairs(updated);
+                    }}
+                    className="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-mono text-xs focus:outline-none focus:border-blue-500"
+                  >
+                    {columns.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="text-slate-400 font-semibold">AS</span>
+                  <select
+                    value={pair.targetType}
+                    onChange={(e) => {
+                      const updated = [...castPairs];
+                      updated[idx].targetType = e.target.value as any;
+                      setCastPairs(updated);
+                    }}
+                    className="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-xs text-violet-700 focus:outline-none focus:border-blue-500 uppercase"
+                  >
+                    <option value="string">String (Text)</option>
+                    <option value="integer">Integer (Whole Number)</option>
+                    <option value="float">Float (Decimal)</option>
+                    <option value="date">Date</option>
+                    <option value="boolean">Boolean (True/False)</option>
+                  </select>
+                  {castPairs.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setCastPairs(castPairs.filter((_, i) => i !== idx))}
+                      className="p-1.5 text-slate-400 hover:text-red-500 rounded hover:bg-red-50 cursor-pointer"
+                    >
+                      <Trash className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setCastPairs([...castPairs, { column: columns[0] || "", targetType: "string" }])}
+                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add another type cast
+              </button>
+            </div>
+          )}
+
+          {/* TAB 3: TEXT CLEANUP */}
+          {activeTab === "text_clean" && (
+            <div className="space-y-3">
+              <span className="text-slate-600 font-medium block">
+                Standardize and clean text fields (trim extra whitespace, change case):
+              </span>
+              {textCleanPairs.map((pair, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <select
+                    value={pair.column}
+                    onChange={(e) => {
+                      const updated = [...textCleanPairs];
+                      updated[idx].column = e.target.value;
+                      setTextCleanPairs(updated);
+                    }}
+                    className="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-mono text-xs focus:outline-none focus:border-blue-500"
+                  >
+                    {columns.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={pair.operation}
+                    onChange={(e) => {
+                      const updated = [...textCleanPairs];
+                      updated[idx].operation = e.target.value as any;
+                      setTextCleanPairs(updated);
+                    }}
+                    className="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-xs text-sky-700 focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="trim">Trim Whitespace (TRIM)</option>
+                    <option value="upper">UPPERCASE (UPPER)</option>
+                    <option value="lower">lowercase (LOWER)</option>
+                  </select>
+                  {textCleanPairs.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setTextCleanPairs(textCleanPairs.filter((_, i) => i !== idx))}
+                      className="p-1.5 text-slate-400 hover:text-red-500 rounded hover:bg-red-50 cursor-pointer"
+                    >
+                      <Trash className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setTextCleanPairs([...textCleanPairs, { column: columns[0] || "", operation: "trim" }])}
+                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add another text cleanup
+              </button>
+            </div>
+          )}
+
+          {/* TAB 4: SELECT / REMOVE COLUMNS */}
           {activeTab === "select_columns" && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -292,7 +460,7 @@ export function StepActionModal({
             </div>
           )}
 
-          {/* TAB 3: FILTER */}
+          {/* TAB 5: FILTER */}
           {activeTab === "filter" && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -383,7 +551,7 @@ export function StepActionModal({
             </div>
           )}
 
-          {/* TAB 4: DROP NULLS */}
+          {/* TAB 6: DROP NULLS */}
           {activeTab === "drop_nulls" && (
             <div className="space-y-2">
               <span className="text-slate-600 font-medium block">
@@ -421,7 +589,7 @@ export function StepActionModal({
             </div>
           )}
 
-          {/* TAB 5: DEDUPE */}
+          {/* TAB 7: DEDUPE */}
           {activeTab === "dedupe" && (
             <div className="space-y-2">
               <span className="text-slate-600 font-medium block">

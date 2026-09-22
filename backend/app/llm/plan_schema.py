@@ -87,15 +87,47 @@ class AggregateStep(BaseModel):
     aggregations: list[AggregationSpec]
 
 
+CastTargetType = Literal["string", "integer", "float", "date", "boolean"]
+TextTransform = Literal["trim", "upper", "lower"]
+
+
+class CastStep(BaseModel):
+    type: Literal["cast"] = "cast"
+    target: str
+    output_alias: str
+    mapping: dict[str, CastTargetType] = Field(
+        description="column_name -> target_type ('string', 'integer', 'float', 'date', 'boolean')"
+    )
+
+
+class TextCleanStep(BaseModel):
+    type: Literal["text_clean"] = "text_clean"
+    target: str
+    output_alias: str
+    operations: dict[str, TextTransform] = Field(
+        description="column_name -> transformation ('trim', 'upper', 'lower')"
+    )
+
+
+class UnionStep(BaseModel):
+    type: Literal["union"] = "union"
+    inputs: list[str] = Field(description="List of dataset aliases to stack/union (at least 2)", min_length=2)
+    output_alias: str
+    distinct: bool = Field(default=False, description="True for UNION (deduplicated), False for UNION ALL (default)")
+
+
 PlanStep = Annotated[
     Union[
         FilterStep,
         DropNullsStep,
         DedupeStep,
         JoinStep,
+        UnionStep,
         RenameStep,
         SelectColumnsStep,
         AggregateStep,
+        CastStep,
+        TextCleanStep,
     ],
     Field(discriminator="type"),
 ]

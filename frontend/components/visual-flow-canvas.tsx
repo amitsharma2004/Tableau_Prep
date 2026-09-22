@@ -30,6 +30,7 @@ export interface VisualFlowCanvasProps {
   onTableDrop?: (tableName: string) => void;
   onConnectNodes?: (sourceAlias: string, targetAlias: string) => void;
   onAddStepOnEdge?: (sourceAlias: string, targetAlias: string) => void;
+  onDeleteStep?: (alias: string) => void;
   className?: string;
 }
 
@@ -39,10 +40,19 @@ export function VisualFlowCanvas({
   onTableDrop,
   onConnectNodes,
   onAddStepOnEdge,
+  onDeleteStep,
   className = "h-[440px]",
 }: VisualFlowCanvasProps) {
   const { initialNodes, initialEdges } = useMemo(() => {
     const { nodes, edges } = planToFlowGraph(plan);
+    // Inject onDeleteStep handler into intermediate step nodes
+    const nodesWithHandler = nodes.map((n) => ({
+      ...n,
+      data: {
+        ...n.data,
+        onDeleteStep: onDeleteStep ? (alias: string) => onDeleteStep(alias) : undefined,
+      },
+    }));
     // Inject onAddStep handler into custom edges
     const edgesWithHandler = edges.map((e) => ({
       ...e,
@@ -51,8 +61,8 @@ export function VisualFlowCanvas({
         onAddStep: (src: string, tgt: string) => onAddStepOnEdge?.(src, tgt),
       },
     }));
-    return { initialNodes: nodes, initialEdges: edgesWithHandler };
-  }, [plan, onAddStepOnEdge]);
+    return { initialNodes: nodesWithHandler, initialEdges: edgesWithHandler };
+  }, [plan, onAddStepOnEdge, onDeleteStep]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);

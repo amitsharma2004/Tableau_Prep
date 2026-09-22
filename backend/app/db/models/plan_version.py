@@ -19,6 +19,8 @@ class PlanVersion(Base):
     version_number: Mapped[int] = mapped_column(Integer, nullable=False)
 
     source: Mapped[str] = mapped_column(String, nullable=False)  # 'llm_generated' | 'human_edited'
+    parent_version_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    change_summary: Mapped[str | None] = mapped_column(String, nullable=True)
     plan_json: Mapped[str] = mapped_column(String, nullable=False)
     schema_snapshot_json: Mapped[str] = mapped_column(String, nullable=False)
 

@@ -76,11 +76,12 @@ def _next_version_number(db: Session, flow_id: str) -> int:
 
 
 def get_active_plan_version(db: Session, flow: Flow) -> PlanVersion:
-    if flow.active_plan_version_id is None:
-        raise DomainError("Flow has no plan yet - generate one first")
-    version = db.get(PlanVersion, flow.active_plan_version_id)
+    version_id = flow.current_version_id or flow.active_plan_version_id
+    if version_id is None:
+        raise DomainError("Flow has no plan yet - generate or save one first")
+    version = db.get(PlanVersion, version_id)
     if version is None:
-        raise DomainError(f"Active plan version {flow.active_plan_version_id!r} not found")
+        raise DomainError(f"Plan version {version_id!r} not found")
     return version
 
 
@@ -90,6 +91,8 @@ def to_plan_version_read(pv: PlanVersion) -> PlanVersionRead:
         flow_id=pv.flow_id,
         version_number=pv.version_number,
         source=pv.source,
+        parent_version_id=getattr(pv, "parent_version_id", None),
+        change_summary=getattr(pv, "change_summary", None),
         plan=PlanDraft.model_validate_json(pv.plan_json),
         approved_by=pv.approved_by,
         approved_at=pv.approved_at,
@@ -138,6 +141,7 @@ def generate_plan_for_flow(db: Session, flow: Flow, actor: str, prompt: str | No
     db.add(version)
     db.flush()
 
+    flow.current_version_id = version.id
     flow.active_plan_version_id = version.id
     move_flow(
         db,
@@ -150,35 +154,35 @@ def generate_plan_for_flow(db: Session, flow: Flow, actor: str, prompt: str | No
     return version
 
 
-def edit_plan(db: Session, flow: Flow, new_plan: PlanDraft, actor: str) -> PlanVersion:
-    """Human edit or manual construction of the flow plan. Always creates a new,
+def edit_plan(
+    db: Session,
+    flow: Flow,
+    new_plan: PlanDraft,
+    actor: str,
+    change_summary: str | None = None,
+    base_version_id: str | None = None,
+) -> PlanVersion:
+    """Human checkpoint edit of the flow plan. Always creates a new,
     immutable plan_versions row (source='human_edited') rather than mutating the
     existing one.
-
-    Allowed in:
-    - 'draft' (allows manual visual canvas building without needing AI prompt first)
-    - 'plan_pending_approval' (refining flow plan)
-    - 'preview_pending_approval' (rejects preview and moves back to plan_pending_approval)
-    - 'failed' (recovery after failed execution)
     """
     current_status = FlowStatus(flow.status)
-    if current_status not in (
-        FlowStatus.DRAFT,
-        FlowStatus.PLAN_PENDING_APPROVAL,
-        FlowStatus.PREVIEW_PENDING_APPROVAL,
-        FlowStatus.APPROVED,
-        FlowStatus.PUBLISHED,
-        FlowStatus.FAILED,
-    ):
+    if current_status == FlowStatus.RUNNING:
         raise DomainError(
-            f"Cannot edit plan for flow in status '{flow.status}'. "
-            "Flow cannot be edited while an execution run is currently running."
+            "Cannot save checkpoint while an execution run is currently in progress."
+        )
+
+    # Optimistic concurrency check: if user provided a base_version_id, ensure no one else saved ahead
+    latest_current = flow.current_version_id or flow.active_plan_version_id
+    if base_version_id and latest_current and base_version_id != latest_current:
+        raise DomainError(
+            "Flow has changed since you opened it. Please reload the latest version to avoid overwriting changes."
         )
 
     # Determine schema snapshot: from previous version or generate from source connection
     schema_snapshot_str = "{}"
-    if flow.active_plan_version_id:
-        previous = db.get(PlanVersion, flow.active_plan_version_id)
+    if latest_current:
+        previous = db.get(PlanVersion, latest_current)
         if previous and previous.schema_snapshot_json:
             schema_snapshot_str = previous.schema_snapshot_json
     else:
@@ -194,17 +198,20 @@ def edit_plan(db: Session, flow: Flow, new_plan: PlanDraft, actor: str) -> PlanV
         flow_id=flow.id,
         version_number=_next_version_number(db, flow.id),
         source="human_edited",
+        parent_version_id=latest_current,
+        change_summary=change_summary or new_plan.summary or "User saved checkpoint",
         plan_json=new_plan.model_dump_json(),
         schema_snapshot_json=schema_snapshot_str,
     )
     db.add(version)
     db.flush()
 
+    flow.current_version_id = version.id
     flow.active_plan_version_id = version.id
     move_flow(
         db,
         flow,
-        FlowStatus.PLAN_PENDING_APPROVAL,  # transitions draft -> plan_pending_approval, or self-loop
+        FlowStatus.PLAN_PENDING_APPROVAL,
         actor=actor,
         detail={"plan_version_id": version.id, "version_number": version.version_number, "edited": True},
     )
@@ -212,28 +219,46 @@ def edit_plan(db: Session, flow: Flow, new_plan: PlanDraft, actor: str) -> PlanV
     return version
 
 
-def approve_plan(db: Session, flow: Flow, actor: str) -> PlanVersion:
-    current_status = FlowStatus(flow.status)
-    if current_status != FlowStatus.PLAN_PENDING_APPROVAL:
-        raise DomainError(
-            f"Cannot approve plan for flow in status '{flow.status}'. "
-            "A plan must be pending approval before it can be approved."
-        )
-    if flow.active_plan_version_id is None:
-        raise DomainError("Flow has no active plan version to approve")
+def approve_plan(db: Session, flow: Flow, actor: str, version_id: str | None = None) -> PlanVersion:
+    target_version_id = version_id or flow.current_version_id or flow.active_plan_version_id
+    if not target_version_id:
+        raise DomainError("Flow has no plan version to approve")
 
-    version = db.get(PlanVersion, flow.active_plan_version_id)
+    version = db.get(PlanVersion, target_version_id)
+    if version is None:
+        raise DomainError(f"Plan version {target_version_id!r} not found")
+
     version.approved_by = actor
     version.approved_at = utcnow()
     db.add(version)
-    db.flush()
+
+    flow.approved_version_id = version.id
+    # Keep active_plan_version_id pointed to approved version for backward compatibility
+    flow.active_plan_version_id = version.id
 
     move_flow(
         db,
         flow,
         FlowStatus.PLAN_APPROVED,
         actor=actor,
-        detail={"plan_version_id": version.id},
+        detail={"plan_version_id": version.id, "version_number": version.version_number},
     )
     db.flush()
     return version
+
+
+def restore_version(db: Session, flow: Flow, version_id: str, actor: str) -> PlanVersion:
+    """Restores a past plan version by creating a NEW immutable version with its plan_json."""
+    old_version = db.get(PlanVersion, version_id)
+    if old_version is None or old_version.flow_id != flow.id:
+        raise DomainError(f"Version {version_id!r} not found for this flow")
+
+    restored_plan = PlanDraft.model_validate_json(old_version.plan_json)
+    summary = f"Restored from version V{old_version.version_number}"
+    return edit_plan(
+        db,
+        flow,
+        restored_plan,
+        actor=actor,
+        change_summary=summary,
+    )

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { api, ApiError } from "@/lib/api-client";
 import { useActor } from "@/lib/actor-context";
 import type { Flow, FlowSchedule, PlanVersion, Run } from "@/lib/types";
@@ -138,6 +139,12 @@ export function FlowDetailClient({ flowId }: { flowId: string }) {
             </div>
             {status === "plan_pending_approval" && (
               <div className="flex items-center gap-2">
+                <Link
+                  href={`/flows/new?flowId=${flowId}`}
+                  className="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded shadow-sm cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <span>Open in Visual Studio</span>
+                </Link>
                 <button
                   disabled={busy}
                   onClick={() => runAction(() => api.approvePlan(actorEmail, flowId))}
@@ -155,6 +162,16 @@ export function FlowDetailClient({ flowId }: { flowId: string }) {
                 >
                   {editing ? "Close JSON" : "Raw JSON"}
                 </button>
+              </div>
+            )}
+            {status !== "plan_pending_approval" && (
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/flows/new?flowId=${flowId}`}
+                  className="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded shadow-sm cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <span>Open in Visual Studio</span>
+                </Link>
               </div>
             )}
           </div>

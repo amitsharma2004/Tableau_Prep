@@ -27,7 +27,9 @@ class Flow(Base):
     target_datasource_name: Mapped[str | None] = mapped_column(String, nullable=True)
 
     status: Mapped[str] = mapped_column(String, nullable=False, default=FlowStatus.DRAFT.value)
-    active_plan_version_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    current_version_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    approved_version_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    active_plan_version_id: Mapped[str | None] = mapped_column(String, nullable=True)  # alias for backwards compatibility
 
     created_by: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped["DateTime"] = mapped_column(DateTime(timezone=True), default=utcnow)
