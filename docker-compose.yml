@@ -1,0 +1,53 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tableau-prep-backend
+    ports:
+      - "8000:8000"
+    environment:
+      # App metadata storage (flows, connections, runs, plans)
+      - DATABASE_URL=sqlite:////app/data/app_metadata.db
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-mock-key-for-local-dev}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-DKH8uK7B7xJATDbmRhsFbaWeg-g-QvXBpGBfsGdluyA=}
+      - JOIN_ANOMALY_RATIO=1.5
+      - SCHEMA_SAMPLE_ROW_LIMIT=20
+      - HYPER_OUTPUT_DIR=/app/hyper_output
+      - EXECUTE_CHUNK_SIZE=50000
+    volumes:
+      # 1. Flow & Metadata storage (flows, runs, connections)
+      - tableau_prep_metadata:/app/data
+      # 2. Output storage (Tableau .hyper files)
+      - tableau_prep_output:/app/hyper_output
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+    container_name: tableau-prep-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+      - NODE_ENV=production
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  tableau_prep_metadata:
+    driver: local
+  tableau_prep_output:
+    driver: local
