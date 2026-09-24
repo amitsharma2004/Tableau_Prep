@@ -28,11 +28,12 @@ async function request<T>(
   actorEmail: string,
   options: { method?: string; body?: unknown } = {}
 ): Promise<T> {
+  const effectiveActor = actorEmail && actorEmail.includes("@") ? actorEmail : "shubhanshu@tnqtech.com";
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method ?? "GET",
     headers: {
       "Content-Type": "application/json",
-      "X-Actor-Email": actorEmail,
+      "X-Actor-Email": effectiveActor,
     },
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
   });
