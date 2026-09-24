@@ -166,10 +166,13 @@ class _Compiler:
         if not step.aggregations:
             raise SQLValidationError(f"aggregate step '{step.output_alias}' has no aggregations")
         group_cols = [f"{target_sql}.{quote_identifier(c)}" for c in step.group_by]
-        agg_exprs = [
-            f"{agg.function.upper()}({target_sql}.{quote_identifier(agg.column)}) AS {quote_identifier(agg.alias)}"
-            for agg in step.aggregations
-        ]
+        agg_exprs = []
+        for agg in step.aggregations:
+            if agg.column == "*":
+                expr = f"{agg.function.upper()}(*) AS {quote_identifier(agg.alias)}"
+            else:
+                expr = f"{agg.function.upper()}({target_sql}.{quote_identifier(agg.column)}) AS {quote_identifier(agg.alias)}"
+            agg_exprs.append(expr)
         select_list = ", ".join(group_cols + agg_exprs)
         group_by_sql = f" GROUP BY {', '.join(group_cols)}" if group_cols else ""
         return f"SELECT {select_list} FROM {target_ref} AS {target_sql}{group_by_sql}"

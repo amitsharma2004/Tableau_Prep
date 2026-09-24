@@ -130,6 +130,32 @@ def restore_plan_version(
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
+@router.post("/{flow_id}/validate-plan")
+def validate_flow_plan_endpoint(
+    flow_id: str,
+    payload: PlanEditRequest,
+    db: Session = Depends(get_db),
+):
+    """Executes the 4-gate verification engine on a draft plan for this flow."""
+    flow = _get_flow_or_404(db, flow_id)
+    from app.validator.plan_verifier import verify_plan
+    from app.connectors.factory import build_connector
+    from app.core.security import decrypt
+
+    conn = flow.source_connection
+    if not conn:
+        raise HTTPException(status_code=400, detail="Flow has no associated source connection.")
+
+    secret = decrypt(conn.encrypted_secret)
+    connector = build_connector(
+        conn.type, conn.host, conn.port, conn.database_name, conn.username, secret
+    )
+    tables = connector.introspect_schema()
+    dialect = "postgres" if conn.type == "postgres" else "sqlite"
+    report = verify_plan(payload.plan, tables, dialect=dialect)
+    return report.to_dict()
+
+
 @router.post("/{flow_id}/approve-plan", response_model=PlanVersionRead)
 def approve_plan(
     flow_id: str,

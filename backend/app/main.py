@@ -8,6 +8,7 @@ from app.api.runs import router as runs_router
 from app.services.scheduler_worker import start_scheduler, stop_scheduler
 from app.db.base import Base
 from app.db.session import engine
+import app.db.models  # Ensures all ORM models (Flow, Connection, Run, PlanVersion, AuditLog) are registered
 
 
 @asynccontextmanager

@@ -38,5 +38,8 @@ dev = [
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
+[project.scripts]
+tableau-prep-mcp = "app.mcp.server:run_stdio_server"
+
 [tool.setuptools.packages.find]
 include = ["app*"]
