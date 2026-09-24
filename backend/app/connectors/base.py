@@ -19,12 +19,14 @@ from sqlalchemy.engine import Engine
 _IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
-def quote_identifier(name: str) -> str:
+def quote_identifier(name: str, dialect: str = "ansi") -> str:
     """Guard against SQL injection via table/schema names that ultimately
     trace back to an LLM-generated plan (see transform/plan_to_sql.py in a
     later milestone). Only allows standard identifier characters."""
     if not _IDENTIFIER_RE.match(name):
         raise ValueError(f"Unsafe or invalid identifier: {name!r}")
+    if dialect == "mysql":
+        return f"`{name}`"
     return f'"{name}"'
 
 

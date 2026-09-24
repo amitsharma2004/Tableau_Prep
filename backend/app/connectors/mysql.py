@@ -30,3 +30,14 @@ class MySQLConnector(SQLAlchemyConnectorMixin, DBConnector):
         with self._engine.connect() as conn:
             count = conn.execute(query).scalar()
         return count == 0
+
+    def sample_rows(self, table: str, schema: str | None, limit: int) -> list[dict]:
+        from app.connectors.base import quote_identifier
+        # If schema is 'main' (sqlite default artifact) or None or matches current db, omit schema or use backticks
+        if schema and schema not in ("main", "None", ""):
+            qualified = f"{quote_identifier(schema, dialect='mysql')}.{quote_identifier(table, dialect='mysql')}"
+        else:
+            qualified = quote_identifier(table, dialect="mysql")
+        with self._engine.connect() as conn:
+            result = conn.execute(text(f"SELECT * FROM {qualified} LIMIT :limit"), {"limit": limit})
+            return [dict(row._mapping) for row in result]
