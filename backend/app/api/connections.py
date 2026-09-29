@@ -54,6 +54,7 @@ def test_connection(
 @router.get("/{connection_id}/schema", response_model=ConnectionTestResult)
 def get_connection_schema(
     connection_id: str,
+    force_refresh: bool = False,
     db: Session = Depends(get_db),
     actor: str = Depends(get_current_actor),
 ):
@@ -61,8 +62,11 @@ def get_connection_schema(
     if conn is None:
         raise HTTPException(status_code=404, detail="Connection not found")
     try:
-        return connection_service.test_and_introspect(db, conn, actor)
+        result = connection_service.test_and_introspect(db, conn, actor, force_refresh=force_refresh)
+        db.commit()
+        return result
     except DomainError as exc:
+        db.rollback()
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 

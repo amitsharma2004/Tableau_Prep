@@ -30,6 +30,10 @@ class Connection(Base):
     tableau_site_id: Mapped[str | None] = mapped_column(String, nullable=True)
     tableau_project_id: Mapped[str | None] = mapped_column(String, nullable=True)
 
+    # Local schema caching to avoid 2-3 minute RDS inspection delays
+    cached_schema_json: Mapped[str | None] = mapped_column(String, nullable=True)
+    schema_updated_at: Mapped["DateTime | None"] = mapped_column(DateTime(timezone=True), nullable=True)
+
     created_by: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped["DateTime"] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped["DateTime"] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

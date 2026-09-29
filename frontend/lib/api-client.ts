@@ -62,8 +62,10 @@ export const api = {
     request<Connection>("/connections", actorEmail, { method: "POST", body: payload }),
   testConnection: (actorEmail: string, connectionId: string) =>
     request<ConnectionTestResult>(`/connections/${connectionId}/test`, actorEmail, { method: "POST" }),
-  getConnectionSchema: (actorEmail: string, connectionId: string) =>
-    request<ConnectionTestResult>(`/connections/${connectionId}/schema`, actorEmail),
+  getConnectionSchema: (actorEmail: string, connectionId: string, forceRefresh: boolean = false) => {
+    const query = forceRefresh ? "?force_refresh=true" : "";
+    return request<ConnectionTestResult>(`/connections/${connectionId}/schema${query}`, actorEmail);
+  },
   sampleTable: (actorEmail: string, connectionId: string, table: string, schema?: string, limit: number = 50) => {
     const params = new URLSearchParams({ table, limit: String(limit) });
     if (schema) params.set("schema", schema);

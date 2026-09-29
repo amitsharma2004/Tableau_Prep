@@ -15,6 +15,21 @@ import app.db.models  # Ensures all ORM models (Flow, Connection, Run, PlanVersi
 async def lifespan(app: FastAPI):
     # Ensure app metadata schema (flows, runs, connections, audit) is ready
     Base.metadata.create_all(bind=engine)
+    
+    # Auto-migrate new columns for SQLite if they don't exist yet
+    with engine.connect() as conn:
+        from sqlalchemy import text
+        try:
+            conn.execute(text("ALTER TABLE connections ADD COLUMN cached_schema_json TEXT"))
+            conn.commit()
+        except Exception:
+            pass
+        try:
+            conn.execute(text("ALTER TABLE connections ADD COLUMN schema_updated_at TIMESTAMP"))
+            conn.commit()
+        except Exception:
+            pass
+
     start_scheduler()
     yield
     stop_scheduler()

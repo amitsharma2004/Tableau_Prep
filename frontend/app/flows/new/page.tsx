@@ -1114,13 +1114,30 @@ function FlowStudioContent() {
                   {databaseTables.length}
                 </span>
               </span>
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-600 cursor-pointer"
-                title="Collapse Tables"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => {
+                    if (!selectedConnectionId) return;
+                    setIsLoadingTables(true);
+                    api.getConnectionSchema(actorEmail, selectedConnectionId, true)
+                      .then((res) => setDatabaseTables(res.tables || []))
+                      .catch((err) => console.error("Refresh schema failed:", err))
+                      .finally(() => setIsLoadingTables(false));
+                  }}
+                  disabled={isLoadingTables || !selectedConnectionId}
+                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-600 cursor-pointer disabled:opacity-50"
+                  title="Force refresh schema from database"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingTables ? "animate-spin text-blue-500" : ""}`} />
+                </button>
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-600 cursor-pointer"
+                  title="Collapse Tables"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
 
             {/* Search Input */}

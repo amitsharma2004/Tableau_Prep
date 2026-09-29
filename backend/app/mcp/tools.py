@@ -35,6 +35,7 @@ def get_catalog_schema(connection_id: Optional[str] = None) -> dict[str, Any]:
             return {"error": "No valid source database connection found."}
 
         schema_res = connection_service.test_and_introspect(db, conn, actor="mcp-server")
+        db.commit()
         tables = [
             {
                 "schema": t.schema_name,
