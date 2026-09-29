@@ -92,10 +92,23 @@ def test_and_introspect(
     if connection.type not in DB_TYPES:
         raise DomainError(f"Cannot introspect schema for connection type {connection.type!r}")
 
-    # 1. Fast Cache Hit (0.01 sec response from local SQLite)
-    if not force_refresh and connection.cached_schema_json:
+    # 1. Fast Cache Hit (from DB column OR local fallback JSON file)
+    cache_str = connection.cached_schema_json
+    if not cache_str and connection.type == "mysql" and not force_refresh:
+        # Auto-fallback to pre-compiled local schema JSON if available
+        import os
+        fallback_file = os.path.join(os.path.dirname(__file__), "..", "..", "neoprc_cached_schema.json")
+        if os.path.exists(fallback_file):
+            with open(fallback_file, "r") as f:
+                cache_str = f.read()
+            # Also persist it back to the connection row so next time it's in DB
+            connection.cached_schema_json = cache_str
+            connection.schema_updated_at = datetime.now(timezone.utc)
+            db.flush()
+
+    if not force_refresh and cache_str:
         try:
-            cached_data = json.loads(connection.cached_schema_json)
+            cached_data = json.loads(cache_str)
             tables = [
                 TableSchema(
                     name=t["name"],

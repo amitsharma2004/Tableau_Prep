@@ -1,0 +1,5475 @@
+{
+  "tables": [
+    {
+      "name": "article_float_details",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "float_key",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "float_id",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_type",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "citation_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_generation_timing",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "tool",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "time_taken",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_metadata",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "jid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "aid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "no_of_pages",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_figures",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_tables",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_references",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_boxes",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations_broken",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "reference_style",
+          "data_type": "VARCHAR(30)",
+          "nullable": true
+        },
+        {
+          "name": "template_name",
+          "data_type": "VARCHAR(15)",
+          "nullable": true
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "ga_info",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "is_less_content_more_float",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "version",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "autoqc_detailed_report",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "autoqc_report_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "rule_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "severity",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "autoqc_report",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "no_of_errors",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_warnings",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "uuid",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_name",
+          "data_type": "VARCHAR(20)",
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        },
+        {
+          "name": "is_smart_cache_pdf",
+          "data_type": "INTEGER",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "neoprc_conversion_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "image_download_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "xml_to_tex_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "tex_to_pdf_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "partial_pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "failure_stage",
+          "data_type": "VARCHAR(50)",
+          "nullable": true
+        },
+        {
+          "name": "error_type",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview_history",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pdf_status",
+      "schema": "neopage_acs_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_float_details",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "float_key",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "float_id",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_type",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "citation_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_generation_timing",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "tool",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "time_taken",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_metadata",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "jid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "aid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "no_of_pages",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_figures",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_tables",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_references",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_boxes",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations_broken",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "reference_style",
+          "data_type": "VARCHAR(30)",
+          "nullable": true
+        },
+        {
+          "name": "template_name",
+          "data_type": "VARCHAR(15)",
+          "nullable": true
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "ga_info",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "is_less_content_more_float",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "version",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "autoqc_detailed_report",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "autoqc_report_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "rule_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "severity",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "autoqc_report",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "no_of_errors",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_warnings",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "uuid",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_name",
+          "data_type": "VARCHAR(20)",
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        },
+        {
+          "name": "is_smart_cache_pdf",
+          "data_type": "INTEGER",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "neoprc_conversion_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "image_download_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "xml_to_tex_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "tex_to_pdf_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "partial_pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "failure_stage",
+          "data_type": "VARCHAR(50)",
+          "nullable": true
+        },
+        {
+          "name": "error_type",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview_history",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pdf_status",
+      "schema": "neopage_aves_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_float_details",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "float_key",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "float_id",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_type",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "citation_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_generation_timing",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "tool",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "time_taken",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_metadata",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "jid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "aid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "no_of_pages",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_figures",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_tables",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_references",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_boxes",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations_broken",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "reference_style",
+          "data_type": "VARCHAR(30)",
+          "nullable": true
+        },
+        {
+          "name": "template_name",
+          "data_type": "VARCHAR(15)",
+          "nullable": true
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "ga_info",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "is_less_content_more_float",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "version",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "autoqc_detailed_report",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "autoqc_report_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "rule_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "severity",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "autoqc_report",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "no_of_errors",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_warnings",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "uuid",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_name",
+          "data_type": "VARCHAR(20)",
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        },
+        {
+          "name": "is_smart_cache_pdf",
+          "data_type": "INTEGER",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "neoprc_conversion_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "image_download_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "xml_to_tex_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "tex_to_pdf_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "partial_pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "failure_stage",
+          "data_type": "VARCHAR(50)",
+          "nullable": true
+        },
+        {
+          "name": "error_type",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview_history",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pdf_status",
+      "schema": "neopage_elsevier_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_float_details",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "float_key",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "float_id",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_type",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "float_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "citation_page",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_generation_timing",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "tool",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "time_taken",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_metadata",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "jid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "aid",
+          "data_type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "no_of_pages",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_figures",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_tables",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_references",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_boxes",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_equations_broken",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "reference_style",
+          "data_type": "VARCHAR(30)",
+          "nullable": true
+        },
+        {
+          "name": "template_name",
+          "data_type": "VARCHAR(15)",
+          "nullable": true
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "ga_info",
+          "data_type": "VARCHAR(10)",
+          "nullable": true
+        },
+        {
+          "name": "is_less_content_more_float",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "version",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "autoqc_detailed_report",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "autoqc_report_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "rule_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "severity",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "autoqc_report",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "no_of_errors",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "no_of_warnings",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "uuid",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_name",
+          "data_type": "VARCHAR(20)",
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        },
+        {
+          "name": "is_smart_cache_pdf",
+          "data_type": "INTEGER",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "neoprc_conversion_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "image_download_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "xml_to_tex_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "tex_to_pdf_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "partial_pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "pdf_render_time",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "failure_stage",
+          "data_type": "VARCHAR(50)",
+          "nullable": true
+        },
+        {
+          "name": "error_type",
+          "data_type": "VARCHAR(200)",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "pdf_generation_preview_history",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "role_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pdf_status",
+      "schema": "neopage_sage_firstproof",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "article_metadata_id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "data_type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "start_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "end_time",
+          "data_type": "DATETIME",
+          "nullable": true
+        },
+        {
+          "name": "created_on",
+          "data_type": "DATETIME",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pro_feature_toggle",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_emerald",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_manipal",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_marwadi",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "customer_databases",
+      "schema": "pgc_master",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "customer_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "db_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": true
+        },
+        {
+          "name": "db_host",
+          "data_type": "VARCHAR(400)",
+          "nullable": true
+        },
+        {
+          "name": "db_username",
+          "data_type": "VARCHAR(50)",
+          "nullable": true
+        },
+        {
+          "name": "db_password",
+          "data_type": "VARCHAR(50)",
+          "nullable": true
+        },
+        {
+          "name": "db_port",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "customers",
+      "schema": "pgc_master",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "customer_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "token",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "domain",
+          "data_type": "VARCHAR(400)",
+          "nullable": true
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_mhe",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_pc_elsevier",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_pc_elsevier_books",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_pro",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_srm",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "article_attributes",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "article_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "contents",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "hash",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_name",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "csl_attributes",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "BIGINT",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "edit_log",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "edit_content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "feature_toggle",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "INTEGER",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "graphics",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_attributes",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "journal_config",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "journal_id",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "pit",
+          "data_type": "VARCHAR(25)",
+          "nullable": false
+        },
+        {
+          "name": "pagination_type",
+          "data_type": "VARCHAR(20)",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "csl_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "multilingual",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "VARCHAR(6)",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(80)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "content",
+          "data_type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "template_attributes",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "property_key",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "value",
+          "data_type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "schema": "pgc_vit",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "template_id",
+          "data_type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "data_type": "VARCHAR(600)",
+          "nullable": false
+        },
+        {
+          "name": "path",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "thumbnailpath",
+          "data_type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "previewpagepath",
+          "data_type": "VARCHAR(300)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "INTEGER",
+          "nullable": false
+        }
+      ]
+    }
+  ]
+}
